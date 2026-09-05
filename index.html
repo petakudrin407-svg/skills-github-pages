@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Верни Приложение — База знаний и установка удаленных программ</title>
+    <style>
+        :root {
+            --primary: #0071e3;
+            --primary-dark: #005bb5;
+            --bg: #f5f5f7;
+            --text: #1d1d1f;
+            --card-bg: #ffffff;
+            --success: #34c759;
+            --warning: #ff9500;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            margin: 0;
+            padding: 0;
+            line-height: 1.5;
+        }
+
+        header {
+            background: var(--card-bg);
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            text-align: center;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 24px;
+            color: var(--primary);
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .hero {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .hero h2 {
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+
+        .hero p {
+            color: #6e6e73;
+            font-size: 18px;
+        }
+
+        /* База знаний */
+        .kb-section {
+            margin-bottom: 40px;
+        }
+
+        .search-box {
+            width: 100%;
+            padding: 15px 20px;
+            font-size: 16px;
+            border: 2px solid #d2d2d7;
+            border-radius: 12px;
+            box-sizing: border-box;
+            margin-bottom: 20px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .search-box:focus {
+            border-color: var(--primary);
+        }
+
+        .apps-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+            gap: 15px;
+        }
+
+        .app-card {
+            background: var(--card-bg);
+            border-radius: 14px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .app-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+
+        .app-info h4 {
+            margin: 0 0 5px 0;
+            font-size: 18px;
+        }
+
+        .app-category {
+            font-size: 12px;
+            color: #86868b;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .status-tag {
+            display: inline-block;
+            font-size: 12px;
+            font-weight: 600;
+            padding: 4px 8px;
+            border-radius: 6px;
+            margin-top: 10px;
+        }
+
+        .status-imazing { background: #e6f9ed; color: var(--success); }
+        .status-pwa { background: #fff4e6; color: var(--warning); }
+
+        .app-action-btn {
+            margin-top: 15px;
+            background: #f5f5f7;
+            border: none;
+            padding: 8px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            color: var(--primary);
+            text-align: center;
+            width: 100%;
+        }
+
+        .app-action-btn:hover {
+            background: #e8f0fe;
+        }
+
+        /* Интерактивный виджет */
+        .wizard-card {
+            background: var(--card-bg);
+            border-radius: 18px;
+            padding: 30px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            margin-bottom: 50px;
+        }
+
+        .wizard-step { display: none; }
+        .wizard-step.active { display: block; }
+        .btn-group { display: flex; gap: 15px; margin-top: 20px; }
+
+        button.step-btn {<div class="app-info">
+                    <span class="app-category">Музыка</span>
+                    <h4>Spotify (не для РФ)</h4>
+                    <span class="status-tag status-imazing">Нужен сменного региона ID</span>
+                </div>
+                <button class="app-action-btn" onclick="autoSelectMethod(false)">Показать гайд</button>
+            </div>
+        </div>
+    </div>
+
+    <hr style="border: 0; border-top: 1px solid #d2d2d7; margin: 40px 0;">
+
+    <!-- МАСТЕР ПОДБОРА (ПОДРОБНЫЙ) -->
+    <div class="wizard-card" id="wizard">
+        <div class="wizard-step active" id="step1">
+            <h3>1. Какая операционная система на вашем компьютере?</h3>
+            <div class="btn-group">
+                <button class="step-btn" onclick="setOs('windows')">🪟 Windows</button>
+                <button class="step-btn" onclick="setOs('macos')">🍏 macOS</button>
+            </div>
+        </div>
+
+        <div class="wizard-step" id="step2">
+            <h3>2. Скачивали ли вы или ваши близкие это приложение ранее?</h3>
+            <p style="color: #6e6e73; font-size: 14px;">(Если оно есть в истории покупок любого доступного вам Apple ID — это упростит задачу)</p>
+            <div class="btn-group">
+                <button class="step-btn" onclick="setHistory(true)">Да, было скачано ранее</button>
+                <button class="step-btn" onclick="setHistory(false)">Нет, абсолютно новое</button>
+            </div>
+        </div>
+
+        <div class="wizard-step" id="step-result">
+            <h3>🎉 Решение сформировано!</h3>
+            <p>Ознакомьтесь с инструкцией ниже.</p>
+            <button class="btn-primary" style="padding: 12px 20px; border-radius: 8px;" onclick="resetWizard()">Сбросить фильтр</button>
+        </div>
+    </div>flex: 1;
+            background: var(--bg);
+            border: 2px solid #d2d2d7;
+            padding: 15px;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        button.step-btn:hover {
+            border-color: var(--primary);
+            background: #f0f7ff;
+        }
+
+        .btn-primary { background: var(--primary); color: white; border: none; }
+        .btn-primary:hover { background: var(--primary-dark); }
+
+        /* Карточки с инструкциями */
+        .instruction-card {
+            background: var(--card-bg);
+            border-radius: 18px;
+            padding: 30px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            margin-top: 20px;
+            display: none;
+        }
+
+        .instruction-card.visible { display: block; animation: fadeIn 0.5s ease; }
+        ol { padding-left: 20px; }
+        li { margin-bottom: 12px; }
+        .badge { background: #e8f0fe; color: var(--primary); padding: 4px 8px; border-radius: 6px; font-size: 12px; font-weight: bold; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>📲 Снова в App Store</h1>
+</header>
+
+<div class="container">
+    <div class="hero">
+        <h2>База знаний и инструктор по установке</h2>
+        <p>Найдите свое приложение в базе или воспользуйтесь мастером подбора метода.</p>
+    </div>
+
+    <!-- БЛОК БАЗЫ ЗНАНИЙ -->
+    <div class="kb-section">
+        <input type="text" id="searchApp" class="search-box" placeholder="🔍 Введите название (например: Сбербанк, Т-Банк, Россграм)..." oninput="filterApps()">
+        
+        <div class="apps-grid" id="appsGrid">
+            <!-- Сбербанк -->
+            <div class="app-card" data-name="сбербанк сбер учет онлайн сбол">
+                <div class="app-info">
+                    <span class="app-category">Банки</span>
+                    <h4>Сбербанк</h4>
+                    <span class="status-tag status-imazing">iMazing: Работает</span>
+                    <span class="status-tag status-pwa">PWA веб-версия</span>
+                </div>
+                <button class="app-action-btn" onclick="autoSelectMethod(true)">Показать гайд</button>
+            </div>
+
+            <!-- Т-Банк -->
+            <div class="app-card" data-name="т-банк тинькофф т-старт т-помощь">
+                <div class="app-info">
+                    <span class="app-category">Банки</span>
+                    <h4>Т-Банк (Тинькофф)</h4>
+                    <span class="status-tag status-imazing">iMazing: Работает</span>
+                    <span class="status-tag status-pwa">PWA веб-версия</span>
+                </div>
+                <button class="app-action-btn" onclick="autoSelectMethod(true)">Показать гайд</button>
+            </div>
+
+            <!-- Альфа-Банк -->
+            <div class="app-card" data-name="альфа-банк альфа деньги сверху">
+                <div class="app-info">
+                    <span class="app-category">Банки</span>
+                    <h4>Альфа-Банк</h4>
+                    <span class="status-tag status-imazing">iMazing: Работает</span>
+                    <span class="status-tag status-pwa">PWA веб-версия</span>
+                </div>
+                <button class="app-action-btn" onclick="autoSelectMethod(true)">Показать гайд</button>
+            </div>
+
+            <!-- 2GIS -->
+            <div class="app-card" data-name="2gis даблгис карты навигатор">
+                <div class="app-info">
+                    <span class="app-category">Навигация</span>
+                    <h4>2GIS</h4>
+                    <span class="status-tag status-imazing">iMazing: Работает</span>
+                </div>
+                <button class="app-action-btn" onclick="autoSelectMethod(true)">Показать гайд</button>
+            </div>
+
+            <!-- Spotify -->
+            <div class="app-card" data-name="spotify спотифай музыка">
